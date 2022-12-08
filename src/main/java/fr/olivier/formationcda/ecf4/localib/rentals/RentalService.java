@@ -1,12 +1,15 @@
 package fr.olivier.formationcda.ecf4.localib.rentals;
 
 import fr.olivier.formationcda.ecf4.localib.users.User;
+import fr.olivier.formationcda.ecf4.localib.vehicles.Vehicle;
+import fr.olivier.formationcda.ecf4.localib.vehicles.VehicleService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -15,9 +18,11 @@ public class RentalService {
     private Logger logger = LoggerFactory.getLogger(User.class);
 
     private RentalRepository repository;
+    private VehicleService vehicleService;
 
-    public RentalService(RentalRepository repository) {
+    public RentalService(RentalRepository repository, VehicleService vehicleService) {
         this.repository = repository;
+        this.vehicleService = vehicleService;
     }
 
     /**
@@ -28,12 +33,23 @@ public class RentalService {
         return repository.findAll();
     }
 
+
     /**
-     * Crée une nouvelle location
-     * @param entity les infos de la location à créer
-     * @return la location sauvegardée
+     * Enregistre une nouvelle location si les données sont valides
+     * @param entity les informations de la location à vérifier
+     * @return la location enregistrée
      */
     public Rental save(Rental entity) {
+        //vérifie si le véhicule est disponible
+        if (!this.checkVehicleDisponibility(this.vehicleService.findById(entity.getVehicleId()))){
+            throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, "Véhicule non disponible");
+        }
+        //récupère toutes les locations avec un véhicule particulier
+        List<Rental> rentalList = checkRentalByVehicleId(entity.getVehicleId());
+        //vérifie si le véhicule est disponible aux dates choisies
+        if (!checkDatesDisponibility(entity, rentalList)){
+            throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, "Le véhicule est déjà en réservé à ces dates.");
+        }
         return repository.save(entity);
     }
 
@@ -69,4 +85,60 @@ public class RentalService {
     public void deleteById(Long id) {
         repository.deleteById(id);
     }
+
+
+    /**
+     * Vérifie si un véhicule est disponible à la location
+     * @param vehicle le véhicule à tester
+     * @return true si le véhicule est disponible, sinon false
+     */
+    private Boolean checkVehicleDisponibility(Vehicle vehicle){
+        if(vehicle.getDisponibility()){
+            return true;
+        }else {
+            return false;
+        }
+    }
+
+    /**
+     * Récupère toutes les locations utilisant un véhicule particulier
+     * @param vehicleId l'id du véhicule à vérifier
+     * @return une liste de toutes les locations avec un véhicule particulier
+     */
+    private List<Rental> checkRentalByVehicleId(Long vehicleId) {
+        List<Rental> rentalsWithVehicleId = new ArrayList<>();
+        for (Rental rental : this.findAll()) {
+            if (rental.getVehicleId() == vehicleId) {
+                rentalsWithVehicleId.add(rental);
+            }
+        }
+        return rentalsWithVehicleId;
+    }
+
+    /**
+     * Vérifie si les dates de la location sont disponibles pour un vehicule particulier
+     * @param rentalToCheck la location à vérifier.
+     * @param rentals la liste des locations existante pour ce véhicule particulier
+     * @return true si les dates sont libres.
+     */
+    private Boolean checkDatesDisponibility(Rental rentalToCheck, List<Rental> rentals){
+        Boolean isDatevalid = false;
+        for (Rental rental : rentals){
+            //si la date de début de location est durant une location existante return false
+            if (rentalToCheck.getStartDate().isAfter(rental.getStartDate()) && rentalToCheck.getStartDate().isBefore(rental.getEndDate())){
+                isDatevalid = false;
+            //si la date de fin de location est durant une location existante return false
+            } else if (rentalToCheck.getEndDate().isAfter(rental.getStartDate()) && rentalToCheck.getEndDate().isBefore(rental.getEndDate())){
+                isDatevalid = false;
+            //si la date de location contient une autre location alors return false
+            }else if (rentalToCheck.getStartDate().isBefore(rental.getStartDate()) && rentalToCheck.getEndDate().isAfter(rental.getEndDate())){
+                isDatevalid = false;
+            }else {
+                isDatevalid = true;
+            }
+        }
+        return isDatevalid;
+    }
+
+
 }
