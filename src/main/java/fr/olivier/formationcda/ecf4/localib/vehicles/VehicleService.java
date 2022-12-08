@@ -43,7 +43,7 @@ public class VehicleService {
      */
     public Vehicle update(Vehicle vehicle) {
         if (!this.repository.existsById(vehicle.getId())){
-            throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, "Adresse non trouvée.");
+            throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, "véhicule non trouvé.");
         }
         return this.repository.save(vehicle);
     }

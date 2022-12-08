@@ -65,7 +65,7 @@ public class VehicleController {
      */
     @GetMapping("{id}")
     @ResponseStatus(code = HttpStatus.FOUND)
-    public Vehicle findById(Long id) {
+    public Vehicle findById(@PathVariable Long id) {
         return service.findById(id);
     }
 
@@ -76,7 +76,7 @@ public class VehicleController {
      */
     @DeleteMapping("{id}")
     @ResponseStatus(code = HttpStatus.OK)
-    public void deleteById(Long id) {
+    public void deleteById(@PathVariable Long id) {
         service.deleteById(id);
     }
 }
