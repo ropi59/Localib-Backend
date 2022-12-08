@@ -39,3 +39,9 @@ Dans votre IDE, lancez la classe `fr.olivier.formationcda.ecf4.localib.LocalibAp
 ### Utilisation de l'application
 
 L'application est accessible à l'adresse suivante: [http://localhost:8080]
+
+### Récupération du FrontEnd
+
+Le frontEnd de l'application Localib est disponible sur Github via ce lien:
+[Github - Localib FrontEnd](https://github.com/ropi59/ECF2-Front-CDA)
+
