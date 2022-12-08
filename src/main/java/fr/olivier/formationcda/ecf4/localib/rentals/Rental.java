@@ -1,5 +1,6 @@
 package fr.olivier.formationcda.ecf4.localib.rentals;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -19,8 +20,10 @@ public class Rental {
     @Column(name = "vehicleId")
     private Long vehicleId;
     @Column(name = "startDate")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm")
     private LocalDateTime startDate;
     @Column(name = "endDate")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm")
     private LocalDateTime endDate;
 
 }
