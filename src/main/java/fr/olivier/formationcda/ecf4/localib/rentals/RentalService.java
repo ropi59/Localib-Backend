@@ -116,7 +116,7 @@ public class RentalService {
     }
 
     /**
-     * Vérifie si les dates de la location sont disponibles pour un vehicule particulier
+     * Vérifie si les dates de la location sont disponibles pour un véhicule particulier
      * @param rentalToCheck la location à vérifier.
      * @param rentals la liste des locations existante pour ce véhicule particulier
      * @return true si les dates sont libres.
