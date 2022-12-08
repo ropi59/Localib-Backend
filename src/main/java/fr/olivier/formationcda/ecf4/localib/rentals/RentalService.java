@@ -1,6 +1,7 @@
 package fr.olivier.formationcda.ecf4.localib.rentals;
 
 import fr.olivier.formationcda.ecf4.localib.users.User;
+import fr.olivier.formationcda.ecf4.localib.vehicles.Disponibility;
 import fr.olivier.formationcda.ecf4.localib.vehicles.Vehicle;
 import fr.olivier.formationcda.ecf4.localib.vehicles.VehicleService;
 import org.slf4j.Logger;
@@ -93,7 +94,7 @@ public class RentalService {
      * @return true si le véhicule est disponible, sinon false
      */
     private Boolean checkVehicleDisponibility(Vehicle vehicle){
-        if(vehicle.getDisponibility()){
+        if(vehicle.getDisponibility().equals(Disponibility.DISPONIBLE)){
             return true;
         }else {
             return false;

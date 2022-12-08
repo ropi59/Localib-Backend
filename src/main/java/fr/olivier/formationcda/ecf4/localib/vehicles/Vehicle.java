@@ -25,7 +25,7 @@ public class Vehicle {
     @Column(name = "price", nullable = false)
     private double price;
     @Column(name = "disponibility", nullable = false)
-    private Boolean disponibility;
+    private Disponibility disponibility;
     @Column(name = "vehiclePic")
     private String vehiclePic;
 
