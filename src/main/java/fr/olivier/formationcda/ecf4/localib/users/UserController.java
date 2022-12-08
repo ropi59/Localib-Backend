@@ -1,6 +1,5 @@
 package fr.olivier.formationcda.ecf4.localib.users;
 
-import fr.olivier.formationcda.ecf4.localib.vehicles.Vehicle;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
