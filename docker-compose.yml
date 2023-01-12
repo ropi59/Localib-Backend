@@ -1,0 +1,25 @@
+services:
+
+  localhost:
+    image: mysql:5.7
+    restart: unless-stopped
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_ROOT_USERNAME=root
+      - MYSQL_DATABASE=localib
+    networks:
+      - application
+    ports:
+      - 3307:3306
+
+  api_spring:
+    build: .
+    ports:
+      - 8081:8080
+    depends_on:
+      - localhost
+    environment:
+      DATABASE_USERNAME: root
+      DATABASE_PASSWORD: root
+      DATABASE_URL: jdbc:mysql://localhost:3306/localib?useSSL=false&serverTimezone=UTC
+      PLATFORM: mysql
